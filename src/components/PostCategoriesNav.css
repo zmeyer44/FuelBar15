@@ -19,6 +19,7 @@
   font-size: 1.4rem;
   color: black;
   box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+  width: 25rem;
 }
 
 .PostCategoriesNav input[type='text']:focus {

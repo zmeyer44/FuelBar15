@@ -4,8 +4,8 @@ import { Location } from '@reach/router'
 import qs from 'qs'
 
 import PageHeader from '../components/PageHeader'
-import PostSection from '../components/PostSection'
-import PostCategoriesNav from '../components/PostCategoriesNav'
+import EpisodeSection from '../components/EpisodeSection'
+import EpisodeCategoriesNav from '../components/EpisodeCategoriesNav'
 import Layout from '../components/Layout'
 
 /**
@@ -18,7 +18,6 @@ export const byDate = posts => {
   const now = Date.now()
   return posts.filter(post => Date.parse(post.date) <= now)
 }
-
 /**
  * filter posts by category.
  *
@@ -35,20 +34,17 @@ export const byCategory = (posts, title, contentType) => {
 }
 
 // Export Template for use in CMS preview
-export const BlogIndexTemplate = ({
+export const EpisodeIndexTemplate = ({
   title,
-  subtitle,
-  featuredImage,
-  posts = [],
-  postCategories = [],
+  episodes = [],
   enableSearch = true,
   contentType
 }) => (
   <Location>
     {({ location }) => {
-      let filteredPosts =
-        posts && !!posts.length
-          ? byCategory(byDate(posts), title, contentType)
+      let filteredEpisodes =
+        episodes && !!episodes.length
+          ? byCategory(byDate(episodes), title, contentType)
           : []
 
       let queryObj = location.search.replace('?', '')
@@ -56,7 +52,7 @@ export const BlogIndexTemplate = ({
 
       if (enableSearch && queryObj.s) {
         const searchTerm = queryObj.s.toLowerCase()
-        filteredPosts = filteredPosts.filter(post =>
+        filteredEpisodes = filteredEpisodes.filter(post =>
           post.frontmatter.title.toLowerCase().includes(searchTerm)
         )
       }
@@ -64,23 +60,23 @@ export const BlogIndexTemplate = ({
       return (
         <main className="Blog">
           <PageHeader
-            title={title}
-            subtitle={subtitle}
-            backgroundImage={featuredImage}
+            title="Episodes"
+            subtitle="Health is Wealth"
+            backgroundImage="https://www.fillmurray.com/200/300"
           />
 
-          {!!postCategories.length && (
+          {
             <section className="section thin">
               <div className="container">
-                <PostCategoriesNav enableSearch categories={postCategories} />
+                <EpisodeCategoriesNav enableSearch />
               </div>
             </section>
-          )}
+          }
 
-          {!!posts.length && (
+          {!!episodes.length && (
             <section className="section">
               <div className="container">
-                <PostSection posts={filteredPosts} />
+                <EpisodeSection episodes={filteredEpisodes} />
               </div>
             </section>
           )}
@@ -91,53 +87,28 @@ export const BlogIndexTemplate = ({
 )
 
 // Export Default BlogIndex for front-end
-const BlogIndex = ({ data: { page, posts, postCategories } }) => (
-  <Layout
-    meta={page.frontmatter.meta || false}
-    title={page.frontmatter.title || false}
-  >
-    <BlogIndexTemplate
-      {...page}
-      {...page.fields}
-      {...page.frontmatter}
-      posts={posts.edges.map(post => ({
-        ...post.node,
-        ...post.node.frontmatter,
-        ...post.node.fields
-      }))}
-      postCategories={postCategories.edges.map(post => ({
-        ...post.node,
-        ...post.node.frontmatter,
-        ...post.node.fields
+const EpisodeIndex = ({ data: { episodes } }) => (
+  <Layout>
+    <EpisodeIndexTemplate
+      episodes={episodes.edges.map(episode => ({
+        ...episode.node,
+        ...episode.node.frontmatter,
+        ...episode.node.fields
       }))}
     />
   </Layout>
 )
 
-export default BlogIndex
+export default EpisodeIndex
 
 export const pageQuery = graphql`
   ## Query for BlogIndex data
   ## Use GraphiQL interface (http://localhost:8000/___graphql)
   ## $id is processed via gatsby-node.js
   ## query name must be unique to this file
-  query BlogIndex($id: String!) {
-    page: markdownRemark(id: { eq: $id }) {
-      ...Meta
-      fields {
-        contentType
-      }
-      frontmatter {
-        title
-        excerpt
-        template
-        subtitle
-        featuredImage
-      }
-    }
-
-    posts: allMarkdownRemark(
-      filter: { fields: { contentType: { eq: "posts" } } }
+  query EpisodeIndex {
+    episodes: allMarkdownRemark(
+      filter: { fields: { contentType: { eq: "episodes" } } }
       sort: { order: DESC, fields: [frontmatter___date] }
     ) {
       edges {
@@ -149,25 +120,7 @@ export const pageQuery = graphql`
           frontmatter {
             title
             date
-            categories {
-              category
-            }
             featuredImage
-          }
-        }
-      }
-    }
-    postCategories: allMarkdownRemark(
-      filter: { fields: { contentType: { eq: "postCategories" } } }
-      sort: { order: ASC, fields: [frontmatter___title] }
-    ) {
-      edges {
-        node {
-          fields {
-            slug
-          }
-          frontmatter {
-            title
           }
         }
       }
