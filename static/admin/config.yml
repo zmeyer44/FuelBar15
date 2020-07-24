@@ -68,12 +68,6 @@ collections: # A list of collections the CMS should be able to edit
     slug: '{{year}}-{{month}}-{{day}}-{{slug}}'
     create: true # Allow users to create new documents in this collection
     fields: # The fields each document in this collection have
-      - {
-          label: Template,
-          name: template,
-          widget: hidden,
-          default: SingleEpisode,
-        }
       - { label: Title, name: title, widget: string }
       - label: 'Status'
         name: 'status'

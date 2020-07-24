@@ -1,5 +1,4 @@
 import React from 'react'
-import { Link } from 'gatsby'
 import Image from './Image'
 import './PostCard.css'
 
@@ -7,10 +6,11 @@ const EpisodeCard = ({
   featuredImage,
   title,
   slug,
+  link,
   className = '',
   ...props
 }) => (
-  <Link to={slug} className={`PostCard ${className}`}>
+  <a href={link} className={`PostCard ${className}`}>
     {featuredImage && (
       <div className="PostCard--Image relative">
         <Image background src={featuredImage} alt={title} />
@@ -19,7 +19,7 @@ const EpisodeCard = ({
     <div className="PostCard--Content">
       {title && <h3 className="PostCard--Title">{title}</h3>}
     </div>
-  </Link>
+  </a>
 )
 
 export default EpisodeCard

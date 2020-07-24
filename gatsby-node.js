@@ -35,10 +35,13 @@ exports.createPages = ({ actions, graphql }) => {
     const contentTypes = _.groupBy(mdFiles, 'node.fields.contentType')
 
     _.each(contentTypes, (pages, contentType) => {
-      const pagesToCreate = pages.filter(page =>
-        // get pages with template field
-        _.get(page, `node.frontmatter.template`)
-      )
+      const pagesToCreate = pages.filter(page => {
+        if (page.template != null) {
+          // get pages with template field
+          _.get(page, `node.frontmatter.template`)
+        }
+      })
+
       if (!pagesToCreate.length) return console.log(`Skipping ${contentType}`)
 
       console.log(`Creating ${pagesToCreate.length} ${contentType}`)
