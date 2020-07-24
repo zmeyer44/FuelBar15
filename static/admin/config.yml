@@ -4,6 +4,8 @@ backend:
   branch: master # Branch to update (optional; defaults to master)
 
 # display_url: https://gatsbro.netlify.com # This url will display in the top-right of the CMS
+media_folder: static/images
+public_folder: /images
 
 collections: # A list of collections the CMS should be able to edit
   - name: posts
